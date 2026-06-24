@@ -16,5 +16,5 @@ export type Product = {
   brand: string;
   images: ProductImages;
   specs: Record<string, string | number | boolean>;
-  similar: string[];
+  similar?: string[];
 };

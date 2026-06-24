@@ -6,7 +6,7 @@ import { notFound } from "next/navigation";
 
 export default async function ProductPage(props: PageProps<"/products/[slug]">) {
   const { slug } = await props.params;
-  const product = getProductBySlug(slug);
+  const product = await getProductBySlug(slug);
 
   if (!product) notFound();
 
@@ -52,7 +52,6 @@ export default async function ProductPage(props: PageProps<"/products/[slug]">) 
 
           <p className="text-gray-600 leading-relaxed">{product.description}</p>
 
-          {/* Stock */}
           <p className={`text-sm font-semibold ${outOfStock ? "text-red-500" : "text-green-600"}`}>
             {outOfStock ? "Rupture de stock" : `En stock (${product.stock} disponibles)`}
           </p>
@@ -69,7 +68,6 @@ export default async function ProductPage(props: PageProps<"/products/[slug]">) 
             ))}
           </div>
 
-          {/* Bouton panier */}
           <button
             disabled={outOfStock}
             className="flex items-center justify-center gap-3 bg-gray-900 text-white font-semibold py-4 rounded-full hover:bg-gray-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"

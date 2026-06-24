@@ -1,8 +1,8 @@
 import { getAllProducts } from "@/domains/catalog/repository/productRepository";
 import ProductCard from "@/app/components/ProductCard";
 
-export default function ProductsPage() {
-  const products = getAllProducts();
+export default async function ProductsPage() {
+  const products = await getAllProducts();
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">

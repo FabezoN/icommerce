@@ -2,8 +2,8 @@ import Link from "next/link";
 import { getAllProducts } from "@/domains/catalog/repository/productRepository";
 import ProductCard from "@/app/components/ProductCard";
 
-export default function Home() {
-  const products = getAllProducts();
+export default async function Home() {
+  const products = await getAllProducts();
 
   return (
     <div>
@@ -19,14 +19,12 @@ export default function Home() {
           <p className="text-lg text-gray-400 max-w-md">
             Des milliers de produits sélectionnés, livrés rapidement chez vous.
           </p>
-          <div className="flex gap-4 mt-2">
-            <Link
-              href="#products"
-              className="bg-white text-gray-900 font-semibold px-8 py-3 rounded-full hover:bg-gray-100 transition-colors"
-            >
-              Voir les produits
-            </Link>
-          </div>
+          <Link
+            href="#products"
+            className="bg-white text-gray-900 font-semibold px-8 py-3 rounded-full hover:bg-gray-100 transition-colors mt-2"
+          >
+            Voir les produits
+          </Link>
         </div>
       </section>
 

@@ -1,10 +1,10 @@
-import products from "../data/products.json";
-import type { Product } from "../entity/product";
+import { findAllProducts, findProductBySlug as findBySlug } from "@/domains/catalog/data/productData";
+import type { Product } from "@/domains/catalog/entity/product";
 
-export function getAllProducts(): Product[] {
-  return products as unknown as Product[];
+export async function getAllProducts(): Promise<Product[]> {
+  return findAllProducts();
 }
 
-export function getProductBySlug(slug: string): Product | undefined {
-  return (products as unknown as Product[]).find((p) => p.slug === slug);
+export async function getProductBySlug(slug: string): Promise<Product | null> {
+  return findBySlug(slug);
 }
