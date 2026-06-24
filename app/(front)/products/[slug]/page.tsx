@@ -1,8 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ShoppingCart, ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { getProductBySlug } from "@/domains/catalog/repository/productRepository";
 import { notFound } from "next/navigation";
+import AddToCartButton from "@/app/components/AddToCartButton";
 
 export default async function ProductPage(props: PageProps<"/products/[slug]">) {
   const { slug } = await props.params;
@@ -68,13 +69,7 @@ export default async function ProductPage(props: PageProps<"/products/[slug]">) 
             ))}
           </div>
 
-          <button
-            disabled={outOfStock}
-            className="flex items-center justify-center gap-3 bg-gray-900 text-white font-semibold py-4 rounded-full hover:bg-gray-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-          >
-            <ShoppingCart size={20} />
-            {outOfStock ? "Indisponible" : "Ajouter au panier"}
-          </button>
+          <AddToCartButton product={product} />
         </div>
       </div>
     </div>
