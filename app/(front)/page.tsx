@@ -13,7 +13,7 @@ export default async function Home() {
           <span className="text-sm font-semibold uppercase tracking-widest text-gray-400">
             Nouvelle collection
           </span>
-          <h1 className="text-5xl sm:text-6xl font-black leading-tight max-w-2xl">
+          <h1 className="text-5xl sm:text-6xl font-bold leading-tight max-w-2xl font-dancing">
             Tout ce dont vous avez besoin.
           </h1>
           <p className="text-lg text-gray-400 max-w-md">
@@ -30,7 +30,7 @@ export default async function Home() {
 
       {/* Liste produits */}
       <section id="products" className="max-w-7xl mx-auto px-4 sm:px-6 py-16">
-        <h2 className="text-2xl font-bold text-gray-900 mb-8">Nos produits</h2>
+        <h2 className="text-2xl font-bold text-white mb-8">Nos produits</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
           {products.map((product) => (
             <ProductCard key={product.id} product={product} />

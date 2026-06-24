@@ -24,10 +24,10 @@ export default function ProductCard({ product }: { product: Product }) {
         )}
       </div>
       <p className="text-xs text-gray-400 mb-0.5">{product.brand} · {product.category}</p>
-      <h3 className="text-sm font-semibold text-gray-900 group-hover:text-gray-500 transition-colors leading-snug">
+      <h3 className="text-sm font-semibold text-white group-hover:text-gray-300 transition-colors leading-snug">
         {product.name}
       </h3>
-      <p className="text-sm font-bold text-gray-900 mt-1">
+      <p className="text-sm font-bold text-white mt-1">
         {product.price.toFixed(2)} €
       </p>
     </Link>
