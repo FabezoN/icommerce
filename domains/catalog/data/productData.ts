@@ -1,3 +1,4 @@
+import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import type { Product } from "@/domains/catalog/entity/product";
 
@@ -32,12 +33,21 @@ function toProduct(p: {
   };
 }
 
-export async function findAllProducts(): Promise<Product[]> {
-  const products = await prisma.product.findMany({ orderBy: { name: "asc" } });
-  return products.map(toProduct);
-}
+export const findAllProducts = unstable_cache(
+  async (): Promise<Product[]> => {
+    const products = await prisma.product.findMany({ orderBy: { name: "asc" } });
+    return products.map(toProduct);
+  },
+  ["all-products"],
+  { revalidate: 60, tags: ["products"] }
+);
 
-export async function findProductBySlug(slug: string): Promise<Product | null> {
-  const product = await prisma.product.findUnique({ where: { slug } });
-  return product ? toProduct(product) : null;
-}
+export const findProductBySlug = (slug: string) =>
+  unstable_cache(
+    async (): Promise<Product | null> => {
+      const product = await prisma.product.findUnique({ where: { slug } });
+      return product ? toProduct(product) : null;
+    },
+    [`product-${slug}`],
+    { revalidate: 60, tags: ["products", `product-${slug}`] }
+  )();

@@ -1,3 +1,5 @@
+export const revalidate = 60;
+
 import Link from "next/link";
 import { getAllProducts } from "@/domains/catalog/repository/productRepository";
 import ProductCard from "@/app/components/ProductCard";
