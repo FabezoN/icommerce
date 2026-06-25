@@ -1,5 +1,6 @@
 import { getSponsoredProducts } from "@/domains/sponsored/repository/sponsoredProductRepository";
 import SponsoredProductCard from "./SponsoredProductCard";
+import RefreshSponsoredButton from "./RefreshSponsoredButton";
 
 type Props = {
   count?: number;
@@ -31,6 +32,7 @@ export default async function SponsoredSection({ count = 4, variant = "dark" }: 
         >
           Partenaires
         </span>
+        <RefreshSponsoredButton />
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
         {products.map((product) => (
