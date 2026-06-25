@@ -1,8 +1,10 @@
 export const revalidate = 60;
 
 import Link from "next/link";
+import { Suspense } from "react";
 import { getAllProducts } from "@/domains/catalog/repository/productRepository";
 import ProductCard from "@/app/components/ProductCard";
+import SponsoredSection from "@/app/components/SponsoredSection";
 
 export default async function Home() {
   const products = await getAllProducts();
@@ -30,6 +32,13 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* Produits sponsorisés — GraphQL, stream indépendant */}
+      <div className="bg-gray-950">
+        <Suspense fallback={<SponsoredSectionSkeleton />}>
+          <SponsoredSection count={4} />
+        </Suspense>
+      </div>
+
       {/* Liste produits */}
       <section id="products" className="max-w-7xl mx-auto px-4 sm:px-6 py-16">
         <h2 className="text-2xl font-bold text-white mb-8">Nos produits</h2>
@@ -39,6 +48,23 @@ export default async function Home() {
           ))}
         </div>
       </section>
+    </div>
+  );
+}
+
+function SponsoredSectionSkeleton() {
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 border-t border-gray-800 animate-pulse">
+      <div className="h-6 bg-gray-800 rounded-full w-48 mb-6" />
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className="flex flex-col gap-3">
+            <div className="aspect-square bg-gray-800 rounded-2xl" />
+            <div className="h-4 bg-gray-800 rounded-full w-3/4" />
+            <div className="h-4 bg-gray-800 rounded-full w-1/2" />
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

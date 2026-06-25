@@ -50,3 +50,18 @@ export const findSimilarProducts = (productId: string) =>
     [`similar-${productId}`],
     { revalidate: 60, tags: ["products"] }
   )();
+
+export const findSimilarProductsBySlug = (slug: string) =>
+  unstable_cache(
+    async (): Promise<Product[]> => {
+      const similars = await prisma.similarProduct.findMany({
+        where: { product: { slug } },
+        orderBy: { score: "asc" },
+        take: 4,
+        include: { similarProduct: true },
+      });
+      return similars.map((s) => toProduct(s.similarProduct));
+    },
+    [`similar-slug-${slug}`],
+    { revalidate: 60, tags: ["products"] }
+  )();
