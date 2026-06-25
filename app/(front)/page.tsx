@@ -1,5 +1,3 @@
-export const revalidate = 60;
-
 import Link from "next/link";
 import { Suspense } from "react";
 import { getAllProducts } from "@/domains/catalog/repository/productRepository";

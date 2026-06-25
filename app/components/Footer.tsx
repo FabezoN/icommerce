@@ -1,7 +1,9 @@
 import Link from "next/link";
+import { cacheLife } from "next/cache";
 
-
-export default function Footer() {
+export default async function Footer() {
+  "use cache";
+  cacheLife("max"); // cache quasi-permanent, ne dépend d'aucune donnée dynamique
   return (
     <footer className="bg-gray-950 text-gray-400 mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">

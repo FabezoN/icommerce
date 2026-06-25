@@ -7,7 +7,6 @@ import {
   getSponsoredProducts,
 } from "@/domains/sponsored/repository/sponsoredProductRepository";
 
-export const revalidate = 3600;
 
 export async function generateStaticParams() {
   const products = await getSponsoredProducts(20);

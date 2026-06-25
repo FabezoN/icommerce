@@ -1,15 +1,21 @@
 import Image from "next/image";
 import { Suspense } from "react";
-import { notFound } from "next/navigation";
+import { cacheTag, cacheLife } from "next/cache";
 import { getProductBySlug } from "@/domains/catalog/repository/productRepository";
 import { sleep } from "@/lib/sleep";
 import AddToCartButton from "./AddToCartButton";
 import ProductTabs from "./ProductTabs";
 
 export async function ProductDetails({ slug }: { slug: string }) {
+  "use cache";
+  // 'use cache' : avec cacheComponents, les données sont dynamiques par défaut.
+  // Ce composant devient statique — son HTML prérendu est servi depuis le cache.
+  cacheLife("hours");
+  cacheTag("products", `product-${slug}`);
+
   await sleep(1000); // délai simulé — retirer en production
   const product = await getProductBySlug(slug);
-  if (!product) notFound();
+  if (!product) return null; // notFound() géré au niveau de la page
 
   const outOfStock = product.stock === 0;
 

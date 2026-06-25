@@ -1,9 +1,15 @@
+import { connection } from "next/server";
 import { getSimilarProductsBySlug } from "@/domains/catalog/repository/productRepository";
 import { sleep } from "@/lib/sleep";
 import ProductCard from "./ProductCard";
 
 export async function SimilarProducts({ slug }: { slug: string }) {
-  await sleep(2000); // délai simulé — retirer en production
+  // connection() signale que ce composant nécessite une vraie requête HTTP.
+  // Indispensable pour les appels Prisma dans PPR : fetch() est auto-détecté,
+  // mais Prisma (accès DB direct) ne l'est pas — Next.js rendrait sinon
+  // ce composant comme statique et échouerait au build.
+  await connection();
+  await sleep(2000);
   const products = await getSimilarProductsBySlug(slug);
   if (products.length === 0) return null;
 
