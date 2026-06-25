@@ -1,24 +1,24 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Suspense } from "react";
 import { ArrowLeft } from "lucide-react";
-import { getProductBySlug } from "@/domains/catalog/repository/productRepository";
+import { getAllProducts, getProductBySlug } from "@/domains/catalog/repository/productRepository";
 import { notFound } from "next/navigation";
 import AddToCartButton from "@/app/components/AddToCartButton";
+import ProductTabs from "@/app/components/ProductTabs";
+
+export async function generateStaticParams() {
+  const products = await getAllProducts();
+  return products.map((p) => ({ slug: p.slug }));
+}
 
 export default async function ProductPage(props: PageProps<"/products/[slug]">) {
   const { slug } = await props.params;
-  const { tab } = await props.searchParams;
-
   const product = await getProductBySlug(slug);
+
   if (!product) notFound();
 
-  const activeTab = tab === "specs" ? "specs" : "description";
   const outOfStock = product.stock === 0;
-
-  const tabBase =
-    "px-5 py-2.5 text-sm font-semibold rounded-full transition-colors";
-  const tabActive = "bg-gray-900 text-white";
-  const tabInactive = "text-gray-500 hover:text-gray-900";
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
@@ -62,38 +62,10 @@ export default async function ProductPage(props: PageProps<"/products/[slug]">) 
             {outOfStock ? "Rupture de stock" : `En stock (${product.stock} disponibles)`}
           </p>
 
-          {/* Onglets */}
-          <div>
-            <div className="flex gap-2 bg-gray-100 p-1 rounded-full w-fit mb-5">
-              <Link
-                href={`/products/${slug}`}
-                className={`${tabBase} ${activeTab === "description" ? tabActive : tabInactive}`}
-              >
-                Description
-              </Link>
-              <Link
-                href={`/products/${slug}?tab=specs`}
-                className={`${tabBase} ${activeTab === "specs" ? tabActive : tabInactive}`}
-              >
-                Spécifications
-              </Link>
-            </div>
-
-            {activeTab === "description" ? (
-              <p className="text-gray-600 leading-relaxed">{product.description}</p>
-            ) : (
-              <div className="grid grid-cols-2 gap-3">
-                {Object.entries(product.specs).map(([key, value]) => (
-                  <div key={key} className="bg-gray-50 rounded-xl p-3">
-                    <p className="text-xs text-gray-400 capitalize mb-0.5">{key}</p>
-                    <p className="text-sm font-semibold text-gray-800">
-                      {typeof value === "boolean" ? (value ? "Oui" : "Non") : String(value)}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          {/* Onglets — Client Component, wrappé dans Suspense (requis avec useSearchParams + page statique) */}
+          <Suspense fallback={<div className="h-32 bg-gray-50 rounded-2xl animate-pulse" />}>
+            <ProductTabs product={product} slug={slug} />
+          </Suspense>
 
           <AddToCartButton product={product} />
         </div>
