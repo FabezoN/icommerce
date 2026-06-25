@@ -6,6 +6,7 @@ import { getAllProducts, getProductBySlug } from "@/domains/catalog/repository/p
 import { notFound } from "next/navigation";
 import AddToCartButton from "@/app/components/AddToCartButton";
 import ProductTabs from "@/app/components/ProductTabs";
+import SimilarProducts from "@/app/components/SimilarProducts";
 
 export const revalidate = 60;
 
@@ -72,6 +73,8 @@ export default async function ProductPage(props: PageProps<"/products/[slug]">) 
           <AddToCartButton product={product} />
         </div>
       </div>
+
+      <SimilarProducts productId={product.id} />
     </div>
   );
 }

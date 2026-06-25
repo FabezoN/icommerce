@@ -1,18 +1,23 @@
 "use client";
 
-import { ShoppingCart, Check } from "lucide-react";
 import { useState } from "react";
-import { useCart } from "@/app/context/CartContext";
+import { useRouter } from "next/navigation";
+import { ShoppingCart, Check } from "lucide-react";
 import type { Product } from "@/domains/catalog/entity/product";
 
 export default function AddToCartButton({ product }: { product: Product }) {
-  const { addToCart } = useCart();
+  const router = useRouter();
   const [added, setAdded] = useState(false);
   const outOfStock = product.stock === 0;
 
-  function handleClick() {
-    addToCart(product);
+  async function handleClick() {
+    await fetch("/api/cart", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ productId: product.id }),
+    });
     setAdded(true);
+    router.refresh(); // déclenche le re-render RSC → CartSummary relit la DB
     setTimeout(() => setAdded(false), 1500);
   }
 
