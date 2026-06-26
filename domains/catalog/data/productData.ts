@@ -1,6 +1,8 @@
 import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
+import { sleep } from "@/lib/sleep";
 import type { Product } from "@/domains/catalog/entity/product";
+import type { UpdateProductInput } from "@/domains/catalog/schema/productSchema";
 
 function toProduct(p: {
   id: string; name: string; slug: string; description: string; price: number;
@@ -19,7 +21,10 @@ function toProduct(p: {
 
 export const findAllProducts = unstable_cache(
   async (): Promise<Product[]> => {
+    const start = performance.now();
+    await sleep(800); // simule une requête DB coûteuse — visible dans le terminal
     const products = await prisma.product.findMany({ orderBy: { name: "asc" } });
+    console.log(`[products] fetched ${products.length} products in ${Math.round(performance.now() - start)}ms`);
     return products.map(toProduct);
   },
   ["all-products"],
@@ -50,6 +55,29 @@ export const findSimilarProducts = (productId: string) =>
     [`similar-${productId}`],
     { revalidate: 60, tags: ["products"] }
   )();
+
+export async function updateProductById(
+  id: string,
+  data: UpdateProductInput
+): Promise<Product> {
+  const updated = await prisma.product.update({
+    where: { id },
+    data: {
+      name: data.name,
+      description: data.description,
+      price: data.price,
+      stock: data.stock,
+      category: data.category,
+      brand: data.brand,
+    },
+  });
+  return toProduct(updated);
+}
+
+export async function findProductById(id: string): Promise<Product | null> {
+  const product = await prisma.product.findUnique({ where: { id } });
+  return product ? toProduct(product) : null;
+}
 
 export const findSimilarProductsBySlug = (slug: string) =>
   unstable_cache(

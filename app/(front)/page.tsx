@@ -1,12 +1,9 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { getAllProducts } from "@/domains/catalog/repository/productRepository";
-import ProductCard from "@/app/components/ProductCard";
 import SponsoredSection from "@/app/components/SponsoredSection";
+import { ProductList, ProductListSkeleton } from "@/app/components/ProductList";
 
-export default async function Home() {
-  const products = await getAllProducts();
-
+export default function Home() {
   return (
     <div>
       {/* Hero */}
@@ -37,15 +34,10 @@ export default async function Home() {
         </Suspense>
       </div>
 
-      {/* Liste produits */}
-      <section id="products" className="max-w-7xl mx-auto px-4 sm:px-6 py-16">
-        <h2 className="text-2xl font-bold text-white mb-8">Nos produits</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
-      </section>
+      {/* Liste produits — 'use cache' + cacheTag("products"), invalidée par revalidateTag */}
+      <Suspense fallback={<ProductListSkeleton />}>
+        <ProductList />
+      </Suspense>
     </div>
   );
 }

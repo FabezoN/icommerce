@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { getAllProducts } from "@/domains/catalog/repository/productRepository";
 
 export default async function AdminProductsPage() {
@@ -21,6 +22,7 @@ export default async function AdminProductsPage() {
               <th className="text-left px-5 py-3 font-semibold text-gray-500">Prix</th>
               <th className="text-left px-5 py-3 font-semibold text-gray-500">Stock</th>
               <th className="text-left px-5 py-3 font-semibold text-gray-500">SKU</th>
+              <th className="px-5 py-3" />
             </tr>
           </thead>
           <tbody>
@@ -42,6 +44,14 @@ export default async function AdminProductsPage() {
                   </span>
                 </td>
                 <td className="px-5 py-3 text-gray-400 font-mono text-xs">{product.sku}</td>
+                <td className="px-5 py-3 text-right">
+                  <Link
+                    href={`/admin/products/${product.id}/edit`}
+                    className="text-xs font-medium text-gray-500 hover:text-gray-900 border border-gray-200 rounded-lg px-3 py-1.5 hover:border-gray-400 transition"
+                  >
+                    Modifier
+                  </Link>
+                </td>
               </tr>
             ))}
           </tbody>
