@@ -2,26 +2,34 @@
 
 import { useActionState } from "react";
 import Link from "next/link";
+import { AlertCircle, TriangleAlert } from "lucide-react";
 import { updateProductAction } from "@/app/actions/updateProduct";
 import type { Product } from "@/domains/catalog/entity/product";
 
 function FieldError({ messages }: { messages?: string[] }) {
   if (!messages?.length) return null;
-  return <p className="text-red-500 text-xs mt-1">{messages[0]}</p>;
+  return (
+    <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+      <AlertCircle size={12} />
+      {messages[0]}
+    </p>
+  );
 }
 
 type Props = { product: Product };
 
 export default function EditProductForm({ product }: Props) {
-  // bind id pour que l'action reçoive toujours le bon produit
   const action = updateProductAction.bind(null, product.id);
   const [state, formAction, pending] = useActionState(action, null);
 
   return (
     <form action={formAction} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex flex-col gap-5">
+
+      {/* Erreur globale (DB ou simulée) */}
       {state?.error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl px-4 py-3">
-          {state.error}
+        <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl px-4 py-3 flex items-start gap-2.5">
+          <TriangleAlert size={16} className="shrink-0 mt-0.5" />
+          <span>{state.error}</span>
         </div>
       )}
 
@@ -32,7 +40,9 @@ export default function EditProductForm({ product }: Props) {
           id="name"
           name="name"
           defaultValue={product.name}
-          className="rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 outline-none focus:border-gray-900 focus:ring-2 focus:ring-gray-900/10 transition"
+          className={`rounded-xl border px-4 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 outline-none focus:ring-2 transition ${
+            state?.errors?.name ? "border-red-300 focus:border-red-400 focus:ring-red-100" : "border-gray-200 focus:border-gray-900 focus:ring-gray-900/10"
+          }`}
         />
         <FieldError messages={state?.errors?.name} />
       </div>
@@ -45,7 +55,9 @@ export default function EditProductForm({ product }: Props) {
           name="description"
           rows={4}
           defaultValue={product.description}
-          className="rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 outline-none focus:border-gray-900 focus:ring-2 focus:ring-gray-900/10 transition resize-none"
+          className={`rounded-xl border px-4 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 outline-none focus:ring-2 transition resize-none ${
+            state?.errors?.description ? "border-red-300 focus:border-red-400 focus:ring-red-100" : "border-gray-200 focus:border-gray-900 focus:ring-gray-900/10"
+          }`}
         />
         <FieldError messages={state?.errors?.description} />
       </div>
@@ -61,7 +73,9 @@ export default function EditProductForm({ product }: Props) {
             step="0.01"
             min="0"
             defaultValue={product.price}
-            className="rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 outline-none focus:border-gray-900 focus:ring-2 focus:ring-gray-900/10 transition"
+            className={`rounded-xl border px-4 py-2.5 text-sm text-gray-900 outline-none focus:ring-2 transition ${
+              state?.errors?.price ? "border-red-300 focus:border-red-400 focus:ring-red-100" : "border-gray-200 focus:border-gray-900 focus:ring-gray-900/10"
+            }`}
           />
           <FieldError messages={state?.errors?.price} />
         </div>
@@ -73,7 +87,9 @@ export default function EditProductForm({ product }: Props) {
             type="number"
             min="0"
             defaultValue={product.stock}
-            className="rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 outline-none focus:border-gray-900 focus:ring-2 focus:ring-gray-900/10 transition"
+            className={`rounded-xl border px-4 py-2.5 text-sm text-gray-900 outline-none focus:ring-2 transition ${
+              state?.errors?.stock ? "border-red-300 focus:border-red-400 focus:ring-red-100" : "border-gray-200 focus:border-gray-900 focus:ring-gray-900/10"
+            }`}
           />
           <FieldError messages={state?.errors?.stock} />
         </div>
@@ -87,7 +103,9 @@ export default function EditProductForm({ product }: Props) {
             id="category"
             name="category"
             defaultValue={product.category}
-            className="rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 outline-none focus:border-gray-900 focus:ring-2 focus:ring-gray-900/10 transition"
+            className={`rounded-xl border px-4 py-2.5 text-sm text-gray-900 outline-none focus:ring-2 transition ${
+              state?.errors?.category ? "border-red-300 focus:border-red-400 focus:ring-red-100" : "border-gray-200 focus:border-gray-900 focus:ring-gray-900/10"
+            }`}
           />
           <FieldError messages={state?.errors?.category} />
         </div>
@@ -97,27 +115,42 @@ export default function EditProductForm({ product }: Props) {
             id="brand"
             name="brand"
             defaultValue={product.brand}
-            className="rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 outline-none focus:border-gray-900 focus:ring-2 focus:ring-gray-900/10 transition"
+            className={`rounded-xl border px-4 py-2.5 text-sm text-gray-900 outline-none focus:ring-2 transition ${
+              state?.errors?.brand ? "border-red-300 focus:border-red-400 focus:ring-red-100" : "border-gray-200 focus:border-gray-900 focus:ring-gray-900/10"
+            }`}
           />
           <FieldError messages={state?.errors?.brand} />
         </div>
       </div>
 
       {/* Actions */}
-      <div className="flex items-center gap-3 pt-2 border-t border-gray-100">
+      <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+        <div className="flex items-center gap-3">
+          <button
+            type="submit"
+            disabled={pending}
+            className="bg-gray-900 hover:bg-gray-700 text-white font-semibold rounded-xl px-6 py-2.5 text-sm transition disabled:opacity-60"
+          >
+            {pending ? "Enregistrement…" : "Enregistrer"}
+          </button>
+          <Link
+            href="/admin/products"
+            className="text-sm text-gray-400 hover:text-gray-700 transition"
+          >
+            Annuler
+          </Link>
+        </div>
+
+        {/* Bouton de test d'erreur — soumet intent=test-error sans valider les champs */}
         <button
           type="submit"
+          name="intent"
+          value="test-error"
           disabled={pending}
-          className="bg-gray-900 hover:bg-gray-700 text-white font-semibold rounded-xl px-6 py-2.5 text-sm transition disabled:opacity-60"
+          className="text-xs text-red-400 hover:text-red-600 border border-red-200 hover:border-red-400 rounded-lg px-3 py-1.5 transition disabled:opacity-40"
         >
-          {pending ? "Enregistrement…" : "Enregistrer"}
+          Tester une erreur
         </button>
-        <Link
-          href="/admin/products"
-          className="text-sm text-gray-400 hover:text-gray-700 transition"
-        >
-          Annuler
-        </Link>
       </div>
     </form>
   );
