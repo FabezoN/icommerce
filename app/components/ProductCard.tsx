@@ -1,12 +1,20 @@
 import Image from "next/image";
 import Link from "next/link";
+import PrefetchLink from "./PrefetchLink";
 import type { Product } from "@/domains/catalog/entity/product";
 
-export default function ProductCard({ product }: { product: Product }) {
+type Props = { product: Product; variant?: "A" | "B" };
+
+export default function ProductCard({ product, variant = "A" }: Props) {
   const outOfStock = product.stock === 0;
+  const href = `/products/${product.slug}`;
+
+  // A : prefetch par défaut (Next.js prefetch au viewport)
+  // B : PrefetchLink — prefetch={false} + router.prefetch() au hover
+  const CardLink = variant === "B" ? PrefetchLink : Link;
 
   return (
-    <Link href={`/products/${product.slug}`} className="group block">
+    <CardLink href={href} className="group block">
       <div className="relative aspect-square bg-gray-100 rounded-2xl overflow-hidden mb-3">
         <Image
           src={product.images.main}
@@ -30,6 +38,6 @@ export default function ProductCard({ product }: { product: Product }) {
       <p className="text-sm font-bold text-white mt-1">
         {product.price.toFixed(2)} €
       </p>
-    </Link>
+    </CardLink>
   );
 }

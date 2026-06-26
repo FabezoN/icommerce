@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import SponsoredSection from "@/app/components/SponsoredSection";
-import { ProductList, ProductListSkeleton } from "@/app/components/ProductList";
+import { ProductListAB, ProductListSkeleton } from "@/app/components/ProductList";
 
 export default function Home() {
   return (
@@ -34,9 +34,9 @@ export default function Home() {
         </Suspense>
       </div>
 
-      {/* Liste produits — 'use cache' + cacheTag("products"), invalidée par revalidateTag */}
+      {/* Liste produits — AB test : A=prefetch normal, B=prefetch au hover */}
       <Suspense fallback={<ProductListSkeleton />}>
-        <ProductList />
+        <ProductListAB />
       </Suspense>
     </div>
   );
